@@ -1,24 +1,31 @@
-angular.module('adaptive', [])
+angular.module('adaptive.config', []).value('adaptive.config', {});
 
-  .directive('adapt', function($window) {
+angular.module('adaptive', ['adaptive.config'])
+
+  .directive('adapt', ['adaptive.config', '$window', function(adaptiveConfig, $window) {
       
       return {
 
 	  replace: true,
 	  transclude: true,
-	  scope: { view: '@view' },
-	  template: '<ng-include src=view></ng-include>',
-
+	  scope: { adapt: '@adapt', breakPoints: '@breakPoints' },
+	  template: '<ng-include src=adapt></ng-include>',
+	  
 	  link: function(scope, element, attrs) {
 
-	      // get an array of break points
-	      breakPoints = eval(attrs["adapt"]);
+	      // get breakpoints from element attributes
+	      var breakPoints = eval(attrs.breakPoints);
+
+	      // if the breakpoints aren't defined in the attributes
+	      if (typeof breakPoints === "undefined")
+		  // copy the breakpoints from the global config
+		  breakPoints = adaptiveConfig.breakPoints;
 
 	      // sort from largest to smallest
-	      breakPoints.sort(function(a,b){return b-a});	     
-	      
+	      breakPoints.sort(function(a,b){return b-a});
+
 	      function setCurrentView() {
-		  var viewName = attrs["view"];
+		  var viewName = attrs["adapt"];
 
 		  // pull off the .html
 		      viewName = viewName.substring(0, viewName.lastIndexOf('.'));
@@ -30,17 +37,17 @@ angular.module('adaptive', [])
 		      {
 			  // if the window is wider than the break point, display that view
 			  if ($window.innerWidth > breakPoints[x]) {
-			      attrs["view"] = viewName + "_" + breakPoints[x] + ".html";
+			      attrs["adapt"] = viewName + "_" + breakPoints[x] + ".html";
 			      break;
 			  }
 
 			  // if the window is smaller than the smallest breakpoint
 			  // display the default (mobile first) view
 			  if ($window.innerWidth < breakPoints[breakPoints.length-1])
-			      attrs["view"] = viewName + ".html";
+			      attrs["adapt"] = viewName + ".html";
 		      }
-		  
-		  scope.view = attrs["view"];
+
+		  scope.adapt = attrs["adapt"];
 	      }
 
 	      setCurrentView();
@@ -53,4 +60,4 @@ angular.module('adaptive', [])
 	      });
 	  }
       }
-});
+}]);
