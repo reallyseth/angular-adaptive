@@ -22,7 +22,7 @@ angular.module('adaptive', ['adaptive.config'])
 		  breakPoints = adaptiveConfig.breakPoints;
 
 	      // sort from largest to smallest
-	      breakPoints.sort(function(a,b){return b-a});
+	      breakPoints.sort(function(a,b){return b.width-a.width});
 
 	      function setCurrentView() {
 		  var viewName = attrs["adapt"];
@@ -36,18 +36,20 @@ angular.module('adaptive', ['adaptive.config'])
 		      for (var x = 0; x < breakPoints.length; x++)
 		      {
 			  // if the window is wider than the break point, display that view
-			  if ($window.innerWidth > breakPoints[x]) {
-			      attrs["adapt"] = viewName + "_" + breakPoints[x] + ".html";
+			  if ($window.innerWidth > breakPoints[x].width) {
+			      attrs["adapt"] = viewName + "_" + breakPoints[x].postfix + ".html";
 			      break;
 			  }
 
 			  // if the window is smaller than the smallest breakpoint
 			  // display the default (mobile first) view
-			  if ($window.innerWidth < breakPoints[breakPoints.length-1])
+			  if ($window.innerWidth < breakPoints[breakPoints.length-1].width)
 			      attrs["adapt"] = viewName + ".html";
 		      }
 
-		  scope.adapt = attrs["adapt"];
+		  // only change the scope variable if it needs to be updated
+		  if (scope.adapt != attrs.adapt)
+		      scope.adapt = attrs.adapt;;
 	      }
 
 	      setCurrentView();

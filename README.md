@@ -3,9 +3,9 @@ Adaptive for Angular
 
 This module will dynamically include a view based on the width of the screen. You can set the breakpoints in the html like so:
 
-    <div adapt="partials/myView.html" break-points="[540, 768]"></div>
+    <div adapt="partials/myView.html" break-points='[{ "postfix": "m", "width": 540}, { "postfix": "d", "width": 768}]'></div>
 
-and the view will be swapped out for width specific views (myView_540.html or myView_768.html depending on the width of the screen);
+and the view will be swapped out for width specific views (myView_m.html or myView_d.html depending on the width of the screen);
 
 ## Setup
 
@@ -19,7 +19,7 @@ You can also configure breakpoints at a global level and leave out the `break-po
 
     var myApp = angular.module('myApp', ['myApp.filters', 'myApp.services', 'myApp.directives', 'adaptive']);
     myApp.value('adaptive.config', {
-        breakPoints: [ 540, 768 ]
+        breakPoints: [{ "postfix": "m", "width": 540}, { "postfix": "d", "width": 768}]
     });
 
 And that's it! The module supports as many breakpoints as you want to give it. Feel free to use, fork, and prosper.
