@@ -9,7 +9,7 @@ angular.module('adaptive', ['adaptive.config'])
 	  replace: true,
 	  transclude: true,
 	  scope: { adapt: '@adapt', breakPoints: '@breakPoints' },
-	  template: '<ng-include src=adapt></ng-include>',
+	  template: '<div><ng-include src=adapt></ng-include></div>', // containing div required to prevent multiple directives asking for transclusion on the same element
 	  
 	  link: function(scope, element, attrs) {
 
